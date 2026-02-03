@@ -36,7 +36,12 @@ class _AddTodoPageState extends State<AddTodoPage> {
   }
 
   Future<void> _pickRoutineTime() async {
-    final TimeOfDay? time = await showTimePicker(context: context, initialTime: TimeOfDay.now());
+    final TimeOfDay? time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      initialEntryMode: TimePickerEntryMode.dialOnly,
+    );
+
     if (time != null) setState(() => _routineTime = time);
   }
 
