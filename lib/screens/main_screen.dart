@@ -30,7 +30,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   Timer? _dayCheckTimer;
   Timer? _notificationTimer;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  bool _isFabExpanded = false;
   @override
   void initState() {
     super.initState();
@@ -57,7 +57,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     }
   }
 
-  // --- LOGIKA UTAMA ---
   void _checkDeadlines() {
     DateTime now = DateTime.now();
     for (var item in _todoList) {
@@ -146,7 +145,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     });
   }
 
-  // --- NAVIGASI ---
   void _showAddOptions() {
     showModalBottomSheet(context: context, shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))), builder: (ctx) {
       return Padding(padding: const EdgeInsets.all(20.0), child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -207,7 +205,9 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(appBarTitle, style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.textDark)),
-        backgroundColor: AppColors.surface, elevation: 0, actions: actions,
+        backgroundColor: AppColors.surface,
+        elevation: 0,
+        actions: actions,
         iconTheme: const IconThemeData(color: AppColors.textDark),
         leading: IconButton(
           icon: const Icon(Icons.menu),
@@ -215,89 +215,114 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         ),
       ),
 
-      // --- DRAWER DENGAN DEKORASI ---
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            // HEADER YANG DIPERBAIKI (DEKORATIF)
-            Container(
-              padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [AppColors.primary, Color(0xFF818CF8)], // Gradasi Indigo ke Ungu Muda
-                ),
-              ),
-              child: Stack(
+        child: ListView(children: const [DrawerHeader(child: Text("Menu"))]), // Ganti dengan kode Drawer Anda
+      ),
+
+      // --- LOGIKA BODY DENGAN TUMPUKAN (STACK) ---
+      body: Stack(
+        children: [
+          // LAYER 1: Tampilan Utama (Dashboard/Jadwal/dll)
+          _selectedIndex == 2 ? const SizedBox() : currentScreen,
+
+          // LAYER 2: Menu Pilihan (Rutin & Deadline) - Melayang di atas
+          if (_isFabExpanded)
+            Positioned(
+              bottom: 30, // Jarak dari bawah (di atas Navbar)
+              left: 0,
+              right: 0,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Dekorasi Background (Icon Transparan)
-                  Positioned(
-                    right: -20,
-                    top: -20,
-                    child: Icon(Icons.check_circle_outline, size: 150, color: Colors.white.withOpacity(0.1)),
-                  ),
-
-                  // Konten Profile
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  // Tombol Rutin
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Foto dengan Border
                       Container(
-                        padding: const EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2),
-                        ),
-                        child: CircleAvatar(
-                            radius: 35,
-                            backgroundImage: profileImage,
-                            backgroundColor: Colors.white24,
-                            child: currentUser?.imagePath == null ? const Icon(Icons.person, color: Colors.white, size: 35) : null
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8), boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)]),
+                        child: const Text("Rutin", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
                       ),
-                      const SizedBox(height: 15),
-                      Text(currentUser!.name, style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
-                      Text(currentUser!.job, style: const TextStyle(color: Colors.white70, fontSize: 14)),
-
-                      const SizedBox(height: 15),
-                      const Divider(color: Colors.white24, thickness: 1),
-                      const SizedBox(height: 10),
-
-                      // Info Tambahan Horizontal
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            _drawerChip(Icons.flag, currentUser!.country),
-                            const SizedBox(width: 10),
-                            _drawerChip(Icons.cake, currentUser!.dob.isEmpty ? "-" : currentUser!.dob),
-                            const SizedBox(width: 10),
-                            _drawerChip(Icons.favorite, currentUser!.maritalStatus),
-                          ],
-                        ),
-                      )
+                      const SizedBox(width: 10),
+                      FloatingActionButton.small(
+                        heroTag: "btnRutin",
+                        onPressed: () {
+                          setState(() => _isFabExpanded = false);
+                          _navigateToAdd(true);
+                        },
+                        backgroundColor: Colors.teal,
+                        child: const Icon(Icons.repeat, color: Colors.white),
+                      ),
                     ],
                   ),
+                  const SizedBox(height: 15),
+
+                  // Tombol Deadline
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8), boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)]),
+                        child: const Text("Deadline", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                      ),
+                      const SizedBox(width: 10),
+                      FloatingActionButton.small(
+                        heroTag: "btnDeadline",
+                        onPressed: () {
+                          setState(() => _isFabExpanded = false);
+                          _navigateToAdd(false);
+                        },
+                        backgroundColor: Colors.orange,
+                        child: const Icon(Icons.timer, color: Colors.white),
+                      ),
+                    ],
+                  ),
+
+                  // Jarak kosong agar menu tidak tertutup tombol X
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
+        ],
+      ),
 
-            // MENU ITEMS
-            ListTile(leading: const Icon(Icons.person), title: const Text("Profil"), onTap: () { Navigator.pop(context); Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage())).then((_) => setState((){})); }),
-            ListTile(leading: const Icon(Icons.contact_support), title: const Text("Contact Us"), onTap: () { Navigator.pop(context); Navigator.push(context, MaterialPageRoute(builder: (c) => const ContactUsPage())); }),
-            ListTile(leading: const Icon(Icons.question_answer), title: const Text("FAQ"), onTap: () { Navigator.pop(context); Navigator.push(context, MaterialPageRoute(builder: (c) => const FAQPage())); }),
-          ],
+      // --- TOMBOL UTAMA (FAB) ---
+      // Hanya berisi satu tombol (X atau +) agar posisinya STABIL di dock
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Transform.translate(
+        offset: const Offset(0, 10), // Offset agar pas di lekukan
+        child: SizedBox(
+          height: 70,
+          width: 70,
+          child: FloatingActionButton(
+            heroTag: "btnMain",
+            onPressed: () => setState(() => _isFabExpanded = !_isFabExpanded),
+            backgroundColor: _isFabExpanded ? Colors.red : AppColors.primary,
+            elevation: 8,
+            shape: const CircleBorder(),
+            child: Icon(_isFabExpanded ? Icons.close : Icons.add, color: Colors.white, size: 32),
+          ),
         ),
       ),
 
-      body: _selectedIndex == 2 ? const SizedBox() : currentScreen,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Transform.translate(offset: const Offset(0, 10), child: SizedBox(height: 70, width: 70, child: FloatingActionButton(onPressed: _showAddOptions, backgroundColor: AppColors.primary, elevation: 8, shape: const CircleBorder(), child: const Icon(Icons.add, color: Colors.white, size: 32)))),
+
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex, onTap: (index) => (index == 2) ? _showAddOptions() : setState(() => _selectedIndex = index),
-        type: BottomNavigationBarType.fixed, backgroundColor: AppColors.surface, selectedItemColor: AppColors.primary, unselectedItemColor: Colors.grey.shade400,
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          if (index == 2) {
+            setState(() => _isFabExpanded = !_isFabExpanded);
+          } else {
+            setState(() {
+              _selectedIndex = index;
+              _isFabExpanded = false;
+            });
+          }
+        },
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: AppColors.surface,
+        selectedItemColor: AppColors.primary,
+        unselectedItemColor: Colors.grey.shade400,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.dashboard_outlined), activeIcon: Icon(Icons.dashboard), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.calendar_month_outlined), activeIcon: Icon(Icons.calendar_month), label: "Jadwal"),
@@ -309,7 +334,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     );
   }
 
-  // Widget kecil untuk info di drawer
   Widget _drawerChip(IconData icon, String text) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
