@@ -30,7 +30,6 @@ class _ArchiveViewState extends State<ArchiveView> {
 
     return Column(
         children: [
-          // Dropdown Tahun & Bulan
           Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
@@ -71,7 +70,6 @@ class _ArchiveViewState extends State<ArchiveView> {
               )
           ),
 
-          // List Hasil (Menggunakan Expanded agar sisa layar terisi list)
           Expanded(
               child: _year == null
                   ? const Center(child: Text("Pilih Tahun & Bulan"))
