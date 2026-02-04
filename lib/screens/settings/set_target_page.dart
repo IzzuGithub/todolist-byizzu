@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../data/globals.dart'; // Pastikan path ini sesuai
+import '../../data/globals.dart';
 
 class SetTargetPage extends StatefulWidget {
   const SetTargetPage({Key? key}) : super(key: key);
