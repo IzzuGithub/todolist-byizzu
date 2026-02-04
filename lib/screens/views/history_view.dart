@@ -12,16 +12,16 @@ class HistoryView extends StatelessWidget {
   Widget build(BuildContext context) {
     DateTime now = DateTime.now();
 
-    // Wadah untuk list yang sudah difilter
+
     List<TodoItem> listHariIni = [];
     List<TodoItem> list3HariLalu = [];
     List<TodoItem> listMingguLalu = [];
 
-    // --- LOGIKA PEMISAHAN LIST ---
+
     for (var item in todoList) {
       if (item.isRoutine) continue;
 
-      // Filter: Hanya yang statusnya 'Final' (Selesai, Terlambat, Diabaikan)
+
       if (!item.isCompleted && !item.isOverdue && !item.isIgnored) continue;
 
       DateTime? refDate = item.completedAt ?? item.deadline;
@@ -46,36 +46,36 @@ class HistoryView extends StatelessWidget {
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 10), // Spasi atas pengganti header
+              const SizedBox(height: 10),
 
-              // 1. BAGIAN HARI INI (Selalu Tampil)
+
               _sectionHeader("Hari Ini", Icons.today, Colors.blue),
               if (listHariIni.isEmpty)
                 _emptyState()
               else
                 ...listHariIni.map((e) => _card(e, context)),
 
-              // 2. BAGIAN 3 HARI LALU (Selalu Tampil)
+
               _sectionHeader("3 Hari Lalu", Icons.restore, Colors.orange),
               if (list3HariLalu.isEmpty)
                 _emptyState()
               else
                 ...list3HariLalu.map((e) => _card(e, context)),
 
-              // 3. BAGIAN MINGGU LALU (Selalu Tampil)
+
               _sectionHeader("Minggu Lalu", Icons.calendar_view_week, Colors.purple),
               if (listMingguLalu.isEmpty)
                 _emptyState()
               else
                 ...listMingguLalu.map((e) => _card(e, context)),
 
-              const SizedBox(height: 80) // Padding bawah
+              const SizedBox(height: 80)
             ]
         )
     );
   }
 
-  // Widget Header Per-Section
+
   Widget _sectionHeader(String title, IconData icon, Color color) => Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
       child: Row(
@@ -93,7 +93,7 @@ class HistoryView extends StatelessWidget {
       )
   );
 
-  // Widget Tampilan Jika Kosong
+
   Widget _emptyState() => const Padding(
     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
     child: Text(
@@ -102,7 +102,7 @@ class HistoryView extends StatelessWidget {
     ),
   );
 
-  // Helper Card
+
   Widget _card(TodoItem item, BuildContext context) => TaskCard(
       item: item,
       showActions: false,
