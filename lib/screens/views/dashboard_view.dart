@@ -23,7 +23,7 @@ class DashboardView extends StatelessWidget {
     required this.onFav,
     required this.onReset,
     required this.onSaveTarget,
-    required this.onRefresh, // Wajib diisi
+    required this.onRefresh,
   }) : super(key: key);
 
   List<PieChartSectionData> _getChartSections(List<TodoItem> list) {
@@ -60,7 +60,7 @@ class DashboardView extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          // 1. PROGRESS WIDGET
+
           Container(
             margin: const EdgeInsets.all(16), padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(24), boxShadow: [BoxShadow(color: AppColors.primary.withOpacity(0.3), blurRadius: 15, offset: const Offset(0, 8))]),
@@ -76,7 +76,7 @@ class DashboardView extends StatelessWidget {
             ]),
           ),
 
-          // 2. CHART WIDGET
+
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16), padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)]),
@@ -89,7 +89,7 @@ class DashboardView extends StatelessWidget {
             ]),
           ),
 
-          // 3. WIDGET STATISTIK
+
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16), padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15), boxShadow: [BoxShadow(color: Colors.grey.shade200, blurRadius: 5)]),
@@ -98,7 +98,6 @@ class DashboardView extends StatelessWidget {
                 const Text("Statistik Harian", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                 Row(
                   children: [
-                    // TOMBOL RELOAD
                     IconButton(
                       icon: const Icon(Icons.refresh, color: AppColors.primary),
                       onPressed: onRefresh,
@@ -122,7 +121,7 @@ class DashboardView extends StatelessWidget {
             ]),
           ),
 
-          // 4. TOMBOL SIMPAN
+
           if (isLimitReached && !currentUser!.isTargetPermanent)
             Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Row(children: [
               Expanded(child: OutlinedButton(onPressed: () => onSaveTarget(target, false), style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))), child: const Text("Simpan Sementara"))),
@@ -130,11 +129,10 @@ class DashboardView extends StatelessWidget {
               Expanded(child: ElevatedButton(onPressed: () => onSaveTarget(target, true), style: ElevatedButton.styleFrom(backgroundColor: AppColors.accentGreen, padding: const EdgeInsets.symmetric(vertical: 16), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))), child: const Text("Simpan Permanen"))),
             ])),
 
-          // 5. TOMBOL RESET
+
           if (!currentUser!.isTargetPermanent && totalCreated > 0)
             Padding(padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10), child: SizedBox(width: double.infinity, child: OutlinedButton.icon(onPressed: onReset, icon: const Icon(Icons.refresh), label: const Text("Reset ToDo List"), style: OutlinedButton.styleFrom(foregroundColor: Colors.red, side: const BorderSide(color: Colors.red), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)))))),
 
-          // 6. LIST TASK
           ListView.builder(
             shrinkWrap: true, physics: const NeverScrollableScrollPhysics(), padding: const EdgeInsets.fromLTRB(0, 10, 0, 100),
             itemCount: dashboardList.length,
