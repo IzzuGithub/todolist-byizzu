@@ -14,23 +14,19 @@ class ScheduleView extends StatefulWidget {
 }
 
 class _ScheduleViewState extends State<ScheduleView> {
-  // Default hari ini (0=Minggu, 1=Senin... atau sesuaikan dengan data TodoItem)
-  // Di AddTodo: 0=Minggu, 1=Senin...
-  // DateTime.weekday: 1=Senin, 7=Minggu. Jadi kita konversi:
-  // Jika weekday 7 (Minggu) -> index 0. Jika 1 (Senin) -> index 1.
+
   int _selectedDayIndex = DateTime.now().weekday == 7 ? 0 : DateTime.now().weekday;
 
   final List<String> _days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
   @override
   Widget build(BuildContext context) {
-    // Filter Rutin: Cek apakah hari index ada di list routineDays
+
     List<TodoItem> filteredRoutineList = widget.todoList.where((item) {
       return item.isRoutine && item.routineDays.contains(_selectedDayIndex);
     }).toList();
 
-    // Filter Harian: Cek apakah tugas deadline jatuh pada hari yang dipilih
-    // (Logic sederhana: Jika deadline != null dan weekday cocok)
+
     List<TodoItem> filteredDailyList = widget.todoList.where((item) {
       if (item.isRoutine || item.deadline == null) return false;
       int itemDayIndex = item.deadline!.weekday == 7 ? 0 : item.deadline!.weekday;
@@ -39,7 +35,7 @@ class _ScheduleViewState extends State<ScheduleView> {
 
     return SingleChildScrollView(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // WIDGET PILIHAN HARI
+
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: SingleChildScrollView(
