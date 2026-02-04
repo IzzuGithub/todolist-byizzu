@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/todo_item.dart';
-import '../../data/globals.dart'; // Import data global untuk warna
+import '../../data/globals.dart';
 import '../../widgets/task_card.dart';
 import '../detail_todo_page.dart';
 
