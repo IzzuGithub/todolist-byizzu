@@ -11,7 +11,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   void _openEdit() async {
     await Navigator.push(context, MaterialPageRoute(builder: (c) => const EditProfilePage()));
-    setState(() {}); // Refresh setelah kembali
+    setState(() {});
   }
   @override
   Widget build(BuildContext context) {
